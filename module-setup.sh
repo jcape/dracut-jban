@@ -5,9 +5,9 @@
 
 # Check Function -- return 1 so we're never included by default
 check() {
-  return 1
+  . $(dirname $0)/check
 }
 
 install() {
-  inst_hook pre-mount 99 "$moddir/jban.sh"
+  . $(dirname $0)/install
 }

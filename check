@@ -1,0 +1,10 @@
+#!/bin/bash
+#
+# Dracut Module Check Script
+# 
+
+if [ -n "$USE_JBAN" ]; then
+	return 0
+else
+	return 1
+fi

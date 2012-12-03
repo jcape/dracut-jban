@@ -1,0 +1,6 @@
+#!/bin/bash
+#
+# Dracut Module Initialization Script
+# 
+
+inst_hook pre-mount 99 "$moddir/jban.sh"
