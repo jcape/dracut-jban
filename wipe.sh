@@ -7,7 +7,7 @@ device="$1"
 
 # Device does not support SATA erase, do it manually with "wipe" in 4-pass mode
 if [ -z "`hdparm -I $device | grep '^Security'`" ]; then
-	wipe -fqkFD $device
+	wipe -fqkFD $device &
 else
 	# If the device is locked, assume we locked it.
 	if [ -z "`hdparm -I $device | grep 'not locked'`" ]; then

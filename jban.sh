@@ -9,6 +9,9 @@
 wantsuspend=
 devices=
 
+timeoutsecs=`cat /proc/sys/kernel/hung_task_timeout_secs`
+echo 0 > /proc/sys/kernel/hung_task_timeout_secs
+
 # Get a list of valid block devices
 for device in /sys/block/*; do
 	target=`readlink -f "$device"`
@@ -49,10 +52,12 @@ if [ -n "$wantsuspend" ]; then
 fi
 
 for device in $devices; do
-	/sbin/sata_wipe $device &
+	dash -m /sbin/sata_wipe $device &
 done
 
 wait
 echo
 echo "All drives finished wiping."
 echo
+
+echo $timeoutsecs > /proc/sys/kernel/hung_task_timeout_secs
