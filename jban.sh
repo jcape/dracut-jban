@@ -9,9 +9,10 @@
 wantsuspend=""
 devices=""
 
-function sata_wipe() {
+function sata_wipe {
+	device="$1"
 	# If the device is locked, assume we locked it.
-	if [ -z "`hdparm -I  | grep 'not locked'`" ]; then
+	if [ -z "`hdparm -I $device | grep 'not locked'`" ]; then
 		hdparm --user-master u --security-unlock jban "$device"
 		hdparm --user-master u --security-disable jban "$device"
 	fi
