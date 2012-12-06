@@ -3,5 +3,5 @@
 # Dracut Module Initialization Script
 # 
 
+inst "$moddir/wipe.sh" "/sbin/sata_wipe"
 inst_hook pre-mount 99 "$moddir/jban.sh"
-inst "$moddir/wipe.sh" "/usr/sbin/sata_wipe"

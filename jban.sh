@@ -6,8 +6,8 @@
 # them. 
 #
 
-wantsuspend=""
-devices=""
+wantsuspend=
+devices=
 
 # Get a list of valid block devices
 for device in /sys/block/*; do
@@ -18,7 +18,7 @@ for device in /sys/block/*; do
 
 	device="/dev/`basename $device`"
 	# Skip CD drives
-	if [ -n "`echo -e "`hdparm -I $device`" | grep 'CD-ROM'`" ]; then
+	if [ -n "`hdparm -I $device | grep 'CD-ROM'`" ]; then
 		continue
 	fi
 
@@ -26,26 +26,33 @@ for device in /sys/block/*; do
 done
 
 for device in $devices; do
-	if [ -z "`hdparm -I $device | grep 'not frozen'`" ]; then
-		wantsuspend="$device $wantsuspend"
+	if [ -n "`hdparm -I $device | grep '^Security:'`" ]; then
+		if [ -z "`hdparm -I $device | grep 'not frozen'`" ]; then
+			wantsuspend="$device $wantsuspend"
+		fi
 	fi
 done
 
-if [ 0 -lt $wantsuspend ]; then
+if [ -n "$wantsuspend" ]; then
 	echo
 	echo "The following devices are locked:"
-	for $device in $wantsuspend; do
+	for device in $wantsuspend; do
 		echo "    $device"
 	done
 	echo
 	echo "Press Return to suspend to RAM. After suspending, wake the"
 	echo "computer to wipe these devices..."
 	echo
-	read
+	sleep 3
 
 	echo 'mem' > /sys/power/state
 fi
 
 for device in $devices; do
-	sata_wipe $device &
+	/sbin/sata_wipe $device &
 done
+
+wait
+echo
+echo "All drives finished wiping."
+echo
